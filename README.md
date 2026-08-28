@@ -134,24 +134,7 @@ Here are the screenshots demonstrating the working Student Registration System:
 
 ### 4. Registered Students Directory (Index View)
 ![Browser Output](screenshots/browser_output.png)
-
----
-
-## 9. Problems Encountered
-1. **PHP Zip Extension Missing**: Composer creation failed because the XAMPP PHP command-line environment did not have `extension=zip` enabled by default.
-2. **Database Authentication Denied**: Connecting to MySQL failed initially due to custom password configuration inside phpMyAdmin which differed from blank defaults.
-3. **Symbolic Link Creation Privileges**: Creating a storage link on Windows sometimes requires Administrator cmd privileges to link directories correctly.
-
----
-
-## 10. Solutions
-1. **Configuring PHP.ini**: Located the active XAMPP `php.ini` file at `C:\xampp\php\php.ini`, searched for `;extension=zip`, and uncommented it to allow zip extraction during Composer install.
-2. **Authenticating Database Credentials**: Opened `C:\xampp\phpMyAdmin\config.inc.php` to fetch the correct active root password (`Akosiac52`), updating the `.env` settings to match.
-3. **Symbolic link connectivity**: Ran `php artisan storage:link` inside the local CLI environment which successfully mapped NTFS symlinks.
-
----
-
-## 11. Reflection
+## 9. Reflection
 ### Importance of Validation
 Input validation prevents malicious input from corrupting databases or triggering application errors. By filtering data at the server boundaries, applications can guarantee that stored formats strictly comply with system rules.
 
@@ -169,7 +152,7 @@ Real-world systems scale these patterns using queue workers, cloud-based storage
 
 ---
 
-## 12. References
+## 10. References
 * Laravel. (2026). *Laravel Documentation: Request Validation*. Retrieved from https://laravel.com/docs
 * Oracle. (2026). *MySQL Reference Manual*. Retrieved from https://dev.mysql.com/doc/
 * W3Schools. (2026). *PHP Form Validation*. Retrieved from https://www.w3schools.com/php/php_form_validation.asp
