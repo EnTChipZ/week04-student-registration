@@ -1,59 +1,173 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Student Registration System (MP03)
+**Course:** ITST 302 – Client-Server Technologies (Week 4 Laboratory Activity)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 1. Project Title
+**Mini Project 03: Student Registration System with Laravel Forms, Validation, and File Upload**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 2. Introduction
+In modern enterprise applications, user and student registration is a cornerstone module. The purpose of this Student Registration System is to digitize the paper-based registration process of the College of Information Technology. It enables secure, automated registration of student profiles, manages server-side validations, securely handles document/profile uploads, and establishes a persistent database relationship.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Importance of Data Validation
+Data validation ensures the integrity, accuracy, and security of the database. Without validation, database systems risk receiving malformed entries, duplicate primary/unique identifiers, and potential security vulnerabilities such as SQL injection or cross-site scripting (XSS). Server-side validation acts as a final wall of defense that safeguards application databases.
 
-## Learning Laravel
+### Role of Registration Systems in Enterprise Applications
+Enterprise registration systems act as portals for user onboarding. These systems are integrated with access control lists (ACLs), mailing list triggers, and other enterprise systems. Correctly structuring the registration flow ensures smooth cross-departmental operations and solid security compliance.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 3. Objectives
+Upon completion of this project, the following learning outcomes were achieved:
+- Developed responsive HTML forms using Blade templates.
+- Configured and handled Laravel routes and controller request pipelines.
+- Implemented robust server-side validation rules.
+- Handled secure image file uploads using Laravel's file storage disk system.
+- Created symbolic links linking private storage partitions to public-facing assets.
+- Designed database tables and ran migrations using PHP Artisan.
+- Authored comprehensive technical documentation in Markdown.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 4. Laravel Request Lifecycle
 
-### Premium Partners
+```mermaid
+graph TD
+    A[Browser / Client Request] -->|Sends POST /students| B(routes/web.php)
+    B -->|Routes Request| C[StudentController@store]
+    C -->|Executes Validation Rules| D{Valid Request Data?}
+    D -->|No: Redirects Back with Errors| E[Browser / Old Inputs]
+    D -->|Yes| F[Storage: Upload Profile Picture]
+    F -->|Stores Image path| G[Eloquent Model: Student]
+    G -->|Inserts Record| H[(MySQL Database)]
+    H -->|Saves & Returns Model| I[Redirect to show.blade.php]
+    I -->|Flashes Success Notification| J[Render Student Profile View]
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+When a user submits the registration form:
+1. **Browser**: The browser packages form fields and sends an HTTP POST request to `/students`.
+2. **Route**: The HTTP request is captured by `routes/web.php` and mapped to `StudentController@store`.
+3. **Controller**: The controller initiates the request lifecycle by parsing form payloads.
+4. **Validation**: The request validates all input parameters (unique student ID, valid email formats, and file criteria). If validation fails, an HTTP redirect response sends the browser back to the form along with old inputs and validation messages.
+5. **Model**: Eloquent processes the validated data.
+6. **Database**: The model queries and inserts data into the MySQL `students` table.
+7. **Response**: The controller redirects the client to the `/students/{id}` view, displaying a successful flash message.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 5. Validation Rules
+The following validation rules are implemented:
+* `student_id => 'required|unique:students'`: Prevents multiple registrations under the same ID.
+* `first_name / last_name => 'required|string|max:100'`: Prevents blank entries and truncates data payloads beyond 100 characters.
+* `email => 'required|email|unique:students'`: Ensures email syntax correctness and prevents email reuse.
+* `mobile_number => 'required|numeric'`: Filters non-numerical phone entries.
+* `date_of_birth => 'required|date'`: Restricts text to valid dates.
+* `profile_picture => 'required|image|mimes:jpg,jpeg,png|max:2048'`: Verifies files are valid image extensions and enforces a maximum size of 2MB to protect disk storage resources.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 6. Database Design
 
-## Security Vulnerabilities
+### Entity Relationship Diagram (ERD)
+```mermaid
+erDiagram
+    STUDENTS {
+        bigint id PK
+        string student_id UK
+        string first_name
+        string middle_name
+        string last_name
+        string email UK
+        string mobile_number
+        string gender
+        date date_of_birth
+        string program
+        string year_level
+        text address
+        string profile_picture
+        timestamp created_at
+        timestamp updated_at
+    }
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Table Structure & Constraints
+- **Primary Key**: `id` (bigint auto-increment).
+- **Constraints**: 
+  - `student_id` is unique.
+  - `email` is unique.
+  - `middle_name` is nullable (optional field).
+  - All other fields are set as `NOT NULL`.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 7. Flowchart
+
+```mermaid
+graph TD
+    Start([User Opens Registration Page]) --> FillForm[Fill Out Form]
+    FillForm --> Submit[Submit Registration]
+    Submit --> Validate{Validate Input}
+    Validate -- Invalid --> ShowErr[Display Error Messages]
+    ShowErr --> FillForm
+    Validate -- Valid --> UploadImg[Upload Profile Picture to public/storage]
+    UploadImg --> SaveDB[Save Student Record to MySQL Database]
+    SaveDB --> FlashMsg[Display Success Flash Message]
+    FlashMsg --> ShowProfile[Show Student Profile Page]
+    ShowProfile --> End([End Process])
+```
+
+---
+
+## 8. Screenshots
+Refer to the `screenshots/` directory for visual evidence of implementation:
+* `screenshots/registration_form.png` - The blank student registration form.
+* `screenshots/validation_errors.png` - Validation warnings when submitting empty/invalid fields.
+* `screenshots/successful_registration.png` - Database records successfully submitted.
+* `screenshots/flash_message.png` - The success banner displayed after redirect.
+* `screenshots/uploaded_image.png` - Profile picture displayed in the student directory.
+* `screenshots/database_records.png` - Records shown in phpMyAdmin.
+* `screenshots/laravel_project_structure.png` - Project directories in VS Code.
+* `screenshots/github_repository.png` - The GitHub repository setup.
+* `screenshots/terminal_output.png` - Migrations and symlinks successfully ran in CMD.
+* `screenshots/browser_output.png` - Complete index list page.
+
+---
+
+## 9. Problems Encountered
+1. **PHP Zip Extension Missing**: Composer creation failed because the XAMPP PHP command-line environment did not have `extension=zip` enabled by default.
+2. **Database Authentication Denied**: Connecting to MySQL failed initially due to custom password configuration inside phpMyAdmin which differed from blank defaults.
+3. **Symbolic Link Creation Privileges**: Creating a storage link on Windows sometimes requires Administrator cmd privileges to link directories correctly.
+
+---
+
+## 10. Solutions
+1. **Configuring PHP.ini**: Located the active XAMPP `php.ini` file at `C:\xampp\php\php.ini`, searched for `;extension=zip`, and uncommented it to allow zip extraction during Composer install.
+2. **Authenticating Database Credentials**: Opened `C:\xampp\phpMyAdmin\config.inc.php` to fetch the correct active root password (`Akosiac52`), updating the `.env` settings to match.
+3. **Symbolic link connectivity**: Ran `php artisan storage:link` inside the local CLI environment which successfully mapped NTFS symlinks.
+
+---
+
+## 11. Reflection
+### Importance of Validation
+Input validation prevents malicious input from corrupting databases or triggering application errors. By filtering data at the server boundaries, applications can guarantee that stored formats strictly comply with system rules.
+
+### Lessons Learned
+This project taught me how Laravel handles the file upload lifecycle. Specifically, storing files in the storage system and referencing them in database schemas using relative paths keeps the database clean and lightweight.
+
+### Benefits of Server-Side Validation over Client-Side Validation
+While client-side validation (HTML5 / JS) is good for immediate UI feedback, it can easily be bypassed by turning off JavaScript or using terminal clients like cURL. Server-side validation is absolute and cannot be bypassed, ensuring database safety.
+
+### Importance of File Security in Web Applications
+Allowing users to upload files presents a major security risk. Enforcing mime-type verification (e.g. `mimes:jpg,jpeg,png`) prevents attackers from uploading malicious executable scripts (like PHP shell scripts) and executing them on the server.
+
+### Real-World Registration Enterprise Systems
+Real-world systems scale these patterns using queue workers, cloud-based storage services (like Amazon S3), and transaction-safe database architectures.
+
+---
+
+## 12. References
+* Laravel. (2026). *Laravel Documentation: Request Validation*. Retrieved from https://laravel.com/docs
+* Oracle. (2026). *MySQL Reference Manual*. Retrieved from https://dev.mysql.com/doc/
+* W3Schools. (2026). *PHP Form Validation*. Retrieved from https://www.w3schools.com/php/php_form_validation.asp
