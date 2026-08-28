@@ -121,17 +121,19 @@ graph TD
 ---
 
 ## 8. Screenshots
-Refer to the `screenshots/` directory for visual evidence of implementation:
-* `screenshots/registration_form.png` - The blank student registration form.
-* `screenshots/validation_errors.png` - Validation warnings when submitting empty/invalid fields.
-* `screenshots/successful_registration.png` - Database records successfully submitted.
-* `screenshots/flash_message.png` - The success banner displayed after redirect.
-* `screenshots/uploaded_image.png` - Profile picture displayed in the student directory.
-* `screenshots/database_records.png` - Records shown in phpMyAdmin.
-* `screenshots/laravel_project_structure.png` - Project directories in VS Code.
-* `screenshots/github_repository.png` - The GitHub repository setup.
-* `screenshots/terminal_output.png` - Migrations and symlinks successfully ran in CMD.
-* `screenshots/browser_output.png` - Complete index list page.
+Here are the screenshots demonstrating the working Student Registration System:
+
+### 1. Registration Form (Filled)
+![Registration Form](screenshots/registration_form.png)
+
+### 2. Form Validation Errors (Invalid Input Handling)
+![Validation Errors](screenshots/validation_errors.png)
+
+### 3. Successful Registration (Student Profile View & Success Flash Message)
+![Successful Registration](screenshots/successful_registration.png)
+
+### 4. Registered Students Directory (Index View)
+![Browser Output](screenshots/browser_output.png)
 
 ---
 
