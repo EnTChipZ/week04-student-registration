@@ -40,6 +40,16 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-exclamation text-lg"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-950 font-bold">&times;</button>
+            </div>
+        @endif
+
         @yield('content')
     </main>
 
