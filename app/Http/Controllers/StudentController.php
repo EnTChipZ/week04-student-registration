@@ -48,9 +48,16 @@ class StudentController extends Controller
 
         // 2. Handle File Upload
         if ($request->hasFile('profile_picture')) {
-            // Save file in storage/app/public/profile_pictures
-            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-            $validatedData['profile_picture'] = $path;
+            try {
+                // Save file in storage/app/public/profile_pictures
+                $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+                if (!$path) {
+                    throw new \Exception('Failed to store uploaded file.');
+                }
+                $validatedData['profile_picture'] = $path;
+            } catch (\Exception $e) {
+                return redirect()->back()->withInput()->with('error', 'Image upload failed: ' . $e->getMessage());
+            }
         }
 
         // 3. Store Student Record in MySQL
